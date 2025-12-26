@@ -67,13 +67,55 @@ app.delete("/delete{/:id}",(req,res,next)=>{
 
 
 
-//#region (3)-Get-By-Query
-app.get("/",(req,res,next)=>{
-    if(req.params == "/user/getByName?name=ali"){
-        res.status(201).json({Msg:"done"});
-    }else if (req.query == "/user/getByName?name=test"){
-        res.status(409).json({message : "user name not found"});
+//#region (4)-Get-By-Query
+
+app.get("/user/getByName", (req, res) => {
+    const name = req.query.name;
+    
+    if (name === "ali") {
+        res.status(201).json({id:1,name:"ali",age:27,email:"user@email.com" });
+    } else if (name === "test") {
+        res.status(409).json({ message: "user name not found" });
+    } else {
+        res.status(400).json({ message: "Invalid request" });
     }
+});
+
+// #endregion
+
+
+
+//#region (5)-Get-all-user
+
+app.get("", (req, res) => {
+    const fileData =JSON.parse( fs.readFileSync(filepath,{encoding:"utf-8"}) );
+    console.log(fileData);
+
+    res.status(201).json(fileData);
     return ;
 });
+
+// #endregion
+
+
+
+//#region (6)-FilterUsers-By-Minimumage
+
+app.get("/user/filter", (req, res) => {
+
+    const age = req.query.minage ;
+    const users = req.body;
+    let user  ;
+    console.log(users);
+    
+        users.find((val)=>{
+            if(val.age >= 25){
+                res.status(202).json(val.age);
+            }else if(val.age >= 50){
+                res.status(404).json({mes:"invalid"});
+            }
+        })
+    return ;
+});
+
 // #endregion
