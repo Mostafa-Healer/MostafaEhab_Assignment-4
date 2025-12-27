@@ -32,9 +32,7 @@ app.post("/user",(req,res,next)=>{
 
 
 
-app.listen(port, () => {
-    console.log("Server is running on port " + port);
-});
+
 //#endregion
 
 
@@ -101,21 +99,46 @@ app.get("", (req, res) => {
 
 //#region (6)-FilterUsers-By-Minimumage
 
+let userList = [
+    {"id":1,"name":"ali","user":"user1","age":25,"email":"user1@email.com"},
+    {"id":2,"name":"ahmed","user":"user2","age":30,"email":"user2@email.com"},
+];
+
 app.get("/user/filter", (req, res) => {
 
     const age = req.query.minage ;
-    const users = req.body;
-    let user  ;
-    console.log(users);
     
-        users.find((val)=>{
-            if(val.age >= 25){
-                res.status(202).json(val.age);
-            }else if(val.age >= 50){
-                res.status(404).json({mes:"invalid"});
-            }
-        })
-    return ;
+    const FilteredUser = userList.filter((val)=>{
+        return val.age >= age  ;
+    });
+
+    if(FilteredUser.length == 0){
+        return res.status(404).json({message:"no user found"}) ;
+    }
+    return res.status(200).json(FilteredUser)
+
 });
 
 // #endregion
+
+//#region (7)-Get-Users-By-ID
+app.get("/user/:id", (req, res) => {
+    const id = req.params.id ;
+    const FilterId = userList.filter((val)=>{
+        return val.id == id ;
+    });
+
+    if(FilterId.length == 0){
+        return res.status(404).json({message:"user Id not found"}) ;
+    }
+    return res.status(200).json(FilterId);
+    
+});
+
+// #endregion
+
+
+
+app.listen(port, () => {
+    console.log("Server is running on port " + port);
+});
